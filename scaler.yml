@@ -1,0 +1,74 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: thayakorn-6410210113
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: 6410210113-thayakorn
+  minReplicas: 2
+  maxReplicas: 15
+  metrics:
+    - resource:
+        name: cpu
+        targetAverageUtilization: 100
+      type: Resource
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thayakorn-6410210113
+  labels:
+    component: localhpatest
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30080
+  selector:
+    component: localhpatest
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 6410210113-thayakorn
+  labels:
+    component: localhpatest
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      component: "localhpatest"
+  template:
+    metadata:
+      labels:
+        component: "localhpatest"
+    spec:
+      containers:
+        - name: localhpatest
+          image: "localhpatest:latest"
+          imagePullPolicy: "Never"
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits: 
+              cpu: "100m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            timeoutSeconds: 5
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            timeoutSeconds: 5
+            initialDelaySeconds: 20

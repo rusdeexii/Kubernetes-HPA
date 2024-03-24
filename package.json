@@ -1,0 +1,14 @@
+{
+    "name": "6410210113thayakorn",
+    "version": "1.0.0",
+    "description": "Node.js on Docker",
+    "author": "daniel.trimble@jbhunt.com",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.16.1"
+    }
+  }
+  

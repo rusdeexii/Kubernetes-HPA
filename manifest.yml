@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thayakorn-6410210113
+  labels:
+    component: localhpatest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: "localhpatest"
+  template:
+    metadata:
+      labels:
+        component: "localhpatest"
+    spec:
+      containers:
+        - name: localhpatest
+          image: "localhpatest:latest"  # อ้างอิงชื่อ image ที่ถูกต้อง
+          imagePullPolicy: "Never"  # เปลี่ยนเป็น Always เพื่อให้ Kubernetes ดึง image ใหม่ทุกครั้ง
+          ports:
+          - name: http
+            containerPort: 8080
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits: 
+              cpu: "100m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            timeoutSeconds: 5
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            timeoutSeconds: 5
+            initialDelaySeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thayakorn-6410210113
+  labels:
+    component: localhpatest
+spec:
+  ports:
+    - port: 8080
+      nodePort: 30080
+  selector:
+    component: localhpatest
+  type: NodePort
