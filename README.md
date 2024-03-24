@@ -1,4 +1,3 @@
-
 -docker build . -t localhpatest
 
 -docker run -p 8080:8080 localhpatest:latest
@@ -15,6 +14,6 @@
 
 -curl http://localhost:30080 
 
--
+
 
 
